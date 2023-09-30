@@ -1,13 +1,20 @@
 // import firebase from 'firebase/app';
-// import 'firebase/messaging';
+import 'firebase/messaging';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 
 export class NotificationPushService {
-    private messaging: any;
+    // private messaging = getMessaging();
 
-    constructor() {
-        // Inicializa Firebase con tu configuración
+    
+    
+
+    constructor() {        
+        
+    }
+
+    async getNotificationSubscription(){
+
         const firebaseConfig = {
             apiKey: "AIzaSyBUEd-cLbx9kCIs9sPoIo5r7uYis5q8xkQ",
             authDomain: "push-papaya-com-pe.firebaseapp.com",
@@ -17,23 +24,39 @@ export class NotificationPushService {
             appId: "1:1022258914393:web:38adedcf593752c5943d48"
         };
 
-        const app = initializeApp(firebaseConfig);
-        this.messaging = getMessaging(app);
-    }
+        
 
-    async getNotificationSubscription(): Promise<string | null> {
-        try {
-            // const currentToken = await this.messaging.getToken();
-            const currentToken = await getToken(this.messaging);
-            if (currentToken) {
-                return currentToken;
-            } else {
-                console.warn('No se encontró un token de notificación.');
-                return null;
+        
+        // this.messaging = getMessaging(app);
+        
+
+
+        
+
+
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                console.log('Notification permission granted.');
+                
+                const app = initializeApp(firebaseConfig);
+                const messaging = getMessaging(app);
+                getToken(messaging, { vapidKey: 'BJMAry6ULaqwXQGfKBUcvMeeyfy9wbHFPq37-0GpFmS8Tn22r6XfFWbxOGXqQ3NnX8QX6UuzKB08lk9739fYUHo' }).then((currentToken) => {
+                    if (currentToken) {
+                        console.log('¿currentToken', currentToken);
+                        return currentToken;
+                    } else {
+                        // Show permission request UI
+                        console.log('No registration token available. Request permission to generate one.');
+                        return null;
+                    }
+                }).catch((err) => {
+                    console.log('An error occurred while retrieving token. ', err);
+                    return null;
+                });
+
             }
-        } catch (error) {
-            console.error('Error al obtener la suscripción de notificaciones:', error);
-            return null;
-        }
+            else {
+                console.log('Unable to get permission to notify.');
+            }})
     }
 }

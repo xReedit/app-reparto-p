@@ -100,8 +100,4 @@
     overflow: auto;
   }
 
-  .close-button {
-    margin-top: 10px;
-    cursor: pointer;
-  }
 </style>

@@ -16,14 +16,14 @@
                 
 
                 const notificationPushService = new NotificationPushService();
-                const notificationSubscription = await notificationPushService.getNotificationSubscription()
+                notificationPushService.getNotificationSubscription()
 
-                if (notificationSubscription) {
-                    console.log('Token de suscripción a notificaciones:', notificationSubscription);
-                    // Puedes enviar este token al servidor para enviar notificaciones al usuario.
-                } else {
-                    console.log('El usuario no ha concedido permisos de notificación o ha ocurrido un error.');
-                }
+                // if (notificationSubscription) {
+                //     console.log('Token de suscripción a notificaciones:', notificationSubscription);
+                //     // Puedes enviar este token al servidor para enviar notificaciones al usuario.
+                // } else {
+                //     console.log('El usuario no ha concedido permisos de notificación o ha ocurrido un error.');
+                // }
                 // Permiso concedido, puedes enviar notificaciones push.
             } else {
             // Permiso denegado, maneja la situación según sea necesario.

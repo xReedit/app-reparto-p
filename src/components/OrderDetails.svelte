@@ -73,11 +73,6 @@
         flex-direction: row;
     }
 
-    .seccion-title {
-        background-color: #f5f5f5;      
-        font-weight: 500;  
-    }
-
     .tr-subtotal {
         background: whitesmoke;
     }
