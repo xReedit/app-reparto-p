@@ -2,19 +2,23 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { defineConfig } from 'vitest/config';
 
+
 export default defineConfig({
+	build: {
+		minify: false,
+	},
 	plugins: [
-		sveltekit(),		
+		sveltekit(),				
 		SvelteKitPWA({
 				srcDir: './src',
-				mode: 'production',
+				mode: 'development',
 				// you don't need to do this if you're using generateSW strategy in your app
 				strategies: 'injectManifest',
 				// you don't need to do this if you're using generateSW strategy in your app
 				filename: 'prompt-sw.ts',
 				scope: '/',
 				base: '/',
-				selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
+				selfDestroying: true,
 				manifest: {
 					short_name: 'Papaya Repartidor',
 					name: 'Papaya Repartidor',

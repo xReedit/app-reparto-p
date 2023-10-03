@@ -17,7 +17,14 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$root: 'src'
-		}
+		},
+		serviceWorker: {
+			register: true,
+		},
+		files: {
+			// you don't need to do this if you're using generateSW strategy in your app			
+			serviceWorker: 'src/prompt-sw.ts'			
+		}	
 	}
 };
 

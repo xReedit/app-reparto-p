@@ -2,6 +2,10 @@
 import 'firebase/messaging';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
+import { PUBLIC_VAPID_PUBLIC_KEY } from '$env/static/public';
+
+import { registerSW } from 'virtual:pwa-register'
+
 
 export class NotificationPushService {
     // private messaging = getMessaging();
@@ -34,29 +38,42 @@ export class NotificationPushService {
         
 
 
-        Notification.requestPermission().then((permission) => {
+        Notification.requestPermission().then(async(permission) => {
             if (permission === 'granted') {
                 console.log('Notification permission granted.');
-                
-                const app = initializeApp(firebaseConfig);
-                const messaging = getMessaging(app);
-                getToken(messaging, { vapidKey: 'BJMAry6ULaqwXQGfKBUcvMeeyfy9wbHFPq37-0GpFmS8Tn22r6XfFWbxOGXqQ3NnX8QX6UuzKB08lk9739fYUHo' }).then((currentToken) => {
-                    if (currentToken) {
-                        console.log('¿currentToken', currentToken);
-                        return currentToken;
-                    } else {
-                        // Show permission request UI
-                        console.log('No registration token available. Request permission to generate one.');
-                        return null;
-                    }
-                }).catch((err) => {
-                    console.log('An error occurred while retrieving token. ', err);
-                    return null;
-                });
+
+                // const { registerSW } = await import('virtual:pwa-register')
+                const dataPushSuscription = {
+                    userVisibleOnly: true,
+                    applicationServerKey: this.urlB64ToUint8Array(PUBLIC_VAPID_PUBLIC_KEY),                   
+                }
+                registerSW({
+                    async onRegistered(r) {                        
+                        let sub = await r.pushManager.getSubscription();
+                        if (!sub) {
+                            sub = await r.pushManager.subscribe(dataPushSuscription);
+                        }
+                        console.log(sub);
+
+                    },
+                })            
 
             }
             else {
                 console.log('Unable to get permission to notify.');
             }})
+    }
+
+    urlB64ToUint8Array(base64String: string) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+
+        const rawData = atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
     }
 }

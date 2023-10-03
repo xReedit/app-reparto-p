@@ -4,16 +4,30 @@
 	import "../app.css";	
   import '$root/styles/micss.css';
 	import { onMount } from 'svelte';
+	import { PUBLIC_VAPID_PUBLIC_KEY } from '$env/static/public';
+	import { NotificationPushService } from '$root/services/NotificationPush.services';
 
   onMount(async () => {
+
+    const notificationPushService = new NotificationPushService();
+
     if (pwaInfo) {
       // @ts-ignore
       const { registerSW } = await import('virtual:pwa-register')
       registerSW({
         immediate: true,
         // @ts-ignore
-        onRegistered(r) {          
+        async onRegistered(r) {          
           console.log(`SW Registered: ${r}`)
+          let sub = await r.pushManager.getSubscription();
+                if (!sub) {                    
+                    sub = await r.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: notificationPushService.urlB64ToUint8Array(PUBLIC_VAPID_PUBLIC_KEY),
+                    });
+                }
+                console.log(sub);
+
         },
         // @ts-ignore
         onRegisterError(error) {
@@ -24,6 +38,9 @@
   })
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
+
+
+  
 </script>
 
 <svelte:head> 
