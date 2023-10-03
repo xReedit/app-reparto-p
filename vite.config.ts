@@ -11,7 +11,7 @@ export default defineConfig({
 		sveltekit(),				
 		SvelteKitPWA({
 				srcDir: './src',
-				mode: 'development',
+				mode: 'production',
 				// you don't need to do this if you're using generateSW strategy in your app
 				strategies: 'injectManifest',
 				// you don't need to do this if you're using generateSW strategy in your app
